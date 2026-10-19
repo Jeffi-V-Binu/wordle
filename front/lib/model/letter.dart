@@ -1,7 +1,7 @@
 import 'package:front/data/all_words.dart';
 
 class Letter(final String letter, var HitType hitType) {
-  String get getLetter => letter.toUpperCase();
+  String get getLetter => letter.toLowerCase();
 
   HitType get getHitType => hitType;
 
