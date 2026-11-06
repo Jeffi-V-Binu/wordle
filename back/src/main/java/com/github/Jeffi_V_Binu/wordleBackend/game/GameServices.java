@@ -1,5 +1,6 @@
 package com.github.Jeffi_V_Binu.wordleBackend.game;
 
+import com.github.Jeffi_V_Binu.wordleBackend.game.exceptions.InvalidWordException;
 import org.springframework.stereotype.Service;
 
 import com.github.Jeffi_V_Binu.wordleBackend.game.exceptions.GameNotFoundException;
@@ -42,6 +43,15 @@ public class GameServices { // this will act as an interface for the api to eval
             throw new GameNotFoundException(id);
         }
         else{
+            for(int i = 0 ; i < wordLength ; ++i){
+                hitTypes.add(HitType.MISS);
+            }
+            if(!wordDictionary.isValidGuess(guess)){
+                throw new InvalidWordException(guess);
+            }
+            if(gameSession.getGuesses().contains(guess)){
+                throw new InvalidWordException(guess);
+            }
             for(char c : gameSession.getAnswer().toCharArray()){
                 answerCharCount.put(c, answerCharCount.getOrDefault(c, 0) + 1);
             }
@@ -64,11 +74,13 @@ public class GameServices { // this will act as an interface for the api to eval
                 }
             }
             gameSession.decrementGuessesLeft();
-            boolean correctGuesses = false;
+            gameSession.addGuess(guess);
+            boolean correctGuesses = true;
             for(HitType Ht:hitTypes)
             {
-                if(Ht == HitType.HIT){
-                    correctGuesses = true;
+                if (Ht != HitType.HIT) {
+                    correctGuesses = false;
+                    break;
                 }
             }
             if(correctGuesses){

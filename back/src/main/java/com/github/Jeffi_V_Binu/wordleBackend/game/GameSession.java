@@ -8,6 +8,7 @@ public class GameSession { // this will hold the specific data of each game sess
     private Boolean isGameOver;
     private Boolean isGameWon;
     private Integer guessesLeft;
+    private List<String> guesses;
 
     GameSession(String answer) {
         this.answer = answer;
@@ -46,4 +47,11 @@ public class GameSession { // this will hold the specific data of each game sess
         this.guessesLeft--;
     }
 
+    public void addGuess(String guess){
+        this.guesses.add(guess);
+    }
+
+    public List<String> getGuesses(){
+        return guesses;
+    }
 }

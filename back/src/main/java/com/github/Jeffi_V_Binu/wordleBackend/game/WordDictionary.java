@@ -22,7 +22,7 @@ public class WordDictionary {
     public WordDictionary() throws IOException{
         answers = loadWords("/words/answers.txt");
         answersList = new ArrayList<>(answers);
-        Set<String> allowedGuesses = new HashSet<>(loadWords("words/guesses.txt"));
+        Set<String> allowedGuesses = new HashSet<>(loadWords("/words/guesses.txt"));
         allowedGuesses.addAll(answers);
         allGuesses = Set.copyOf(allowedGuesses);
 
@@ -56,5 +56,9 @@ public class WordDictionary {
     public String getRandomWord() {
         int randomIndex = (int) (ThreadLocalRandom.current().nextDouble(0 , answersList.size()));
         return answersList.get(randomIndex);
+    }
+
+    public boolean isValidGuess(String guess) {
+        return allGuesses.contains(guess.toLowerCase());
     }
 }
