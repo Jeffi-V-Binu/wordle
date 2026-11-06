@@ -6,18 +6,22 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.util.AbstractQueue;
-import java.util.Set;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 @Component
 public class WordDictionary {
     private final Set<String> answers;
     private final Set<String> allGuesses;
+    private final List<String> answersList;
 
     public WordDictionary() throws IOException{
         answers = loadWords("/words/answers.txt");
+        answersList = new ArrayList<>(answers);
         Set<String> allowedGuesses = new HashSet<>(loadWords("words/guesses.txt"));
         allowedGuesses.addAll(answers);
         allGuesses = Set.copyOf(allowedGuesses);
@@ -47,5 +51,10 @@ public class WordDictionary {
 
     public Set<String> getAllGuesses(){
         return allGuesses;
+    }
+
+    public String getRandomWord() {
+        int randomIndex = (int) (ThreadLocalRandom.current().nextDouble(0 , answersList.size()));
+        return answersList.get(randomIndex);
     }
 }
