@@ -15,6 +15,7 @@ public class GameSession { // this will hold the specific data of each game sess
         this.isGameOver = false;
         this.isGameWon = false;
         this.guessesLeft = 5;
+        this.guesses = new java.util.ArrayList<>(guessesLeft);
     }
 
     public String getAnswer() {
