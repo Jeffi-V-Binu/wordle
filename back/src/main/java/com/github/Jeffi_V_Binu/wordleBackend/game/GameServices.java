@@ -43,28 +43,35 @@ public class GameServices { // this will act as an interface for the api to eval
             throw new GameNotFoundException(id);
         }
         else{
+            String answer = gameSession.getAnswer();
+
+            // initialize hitTypes with MISS
             for(int i = 0 ; i < wordLength ; ++i){
                 hitTypes.add(HitType.MISS);
             }
-            if(!wordDictionary.isValidGuess(guess)){
+
+            // early exit conditions
+            if(!wordDictionary.isValidGuess(guess) ||
+                    gameSession.getGuesses().contains(guess) ||
+                    gameSession.getIsGameOver() ||
+                    guess.length() != wordLength){
                 throw new InvalidWordException(guess);
             }
-            if(gameSession.getGuesses().contains(guess)){
-                throw new InvalidWordException(guess);
-            }
-            for(char c : gameSession.getAnswer().toCharArray()){
+
+            // creating a frequency map of the answer
+            for(char c : answer.toCharArray()){
                 answerCharCount.put(c, answerCharCount.getOrDefault(c, 0) + 1);
             }
-            for(int i  = 0 ; i < wordLength ; ++i){
-                hitTypes.set(i, HitType.MISS);
-            }
-            String answer = gameSession.getAnswer();
+
+            // first pass to find all the HITs and decrement their counts in the frequency maps
             for(int i = 0 ; i < wordLength ; ++i){
                 if(guess.charAt(i) == answer.charAt(i)){
                     hitTypes.set(i, HitType.HIT);
                     answerCharCount.put(guess.charAt(i), answerCharCount.get(guess.charAt(i)) - 1);
                 }
             }
+
+            // second pass to find if there's any misplaced letters
             for(int i = 0 ; i < wordLength ; ++i){
                 if(hitTypes.get(i) == HitType.MISS){
                     if(answerCharCount.getOrDefault(guess.charAt(i), 0) > 0){
@@ -75,6 +82,8 @@ public class GameServices { // this will act as an interface for the api to eval
             }
             gameSession.decrementGuessesLeft();
             gameSession.addGuess(guess);
+
+            // to check if the game is won or lost
             boolean correctGuesses = true;
             for(HitType Ht:hitTypes)
             {
